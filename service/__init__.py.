@@ -1,0 +1,31 @@
+
+"""Account Management REST API with Talisman security."""
+
+from flask import Flask, jsonify
+from flask_talisman import Talisman
+
+app = Flask(__name__)
+
+app.config["SECRET_KEY"] = "devops-capstone-development"
+
+# Configure HTTP security headers
+Talisman(
+    app,
+    force_https=False,
+    strict_transport_security=False,
+    content_security_policy={
+        "default-src": "'self'",
+        "script-src": "'self'",
+        "style-src": "'self'",
+    },
+    frame_options="DENY",
+    frame_options_allow_from=None,
+    content_security_policy_nonce_in=None,
+    referrer_policy="strict-origin-when-cross-origin",
+    x_content_type_options=True,
+)
+
+@app.route("/health", methods=["GET"])
+def health():
+    """Return API health status."""
+    return jsonify({"status": "healthy"}), 200
